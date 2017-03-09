@@ -12,13 +12,14 @@ import RealmSwift
 class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var searchTextField: UITextField!
     //Realmインスタンスを取得する
     let realm = try! Realm()
     //DB内のタスクが格納されるリスト
     //日付近い順でソート:降順
     //以降内容をアップデートするとリスト内は自動的に更新される
     
-    let taskArray = try! Realm().objects(Task.self).sorted(byProperty: "date", ascending: false)
+    var taskArray = try! Realm().objects(Task.self).sorted(byProperty: "date", ascending: false)
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -93,6 +94,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             inputViewController.task = task
             
         }
+    }
+    @IBAction func searchButton(_ sender: Any) {
+        
+        let tasks = self.searchTextField.text!
+        if tasks != ""{
+        let array = try! Realm().objects(Task.self).sorted(byProperty: "date", ascending: false).filter("title = %@",tasks)
+        taskArray = array
+        tableView.reloadData()
+        }
+        
     }
 
 
